@@ -19,7 +19,7 @@ This project uses ZIO 2 + Scala 3 web service with a public APIs served on port 
 
 ## How to run it
 
-Start the application with `sbt run`. You might need to adjust the configuration of the project using a `.env` file (see the `.env.example`) or editing the `src/main/resource/application.conf`.
+Start the application with `sbt run`. You might need to adjust the configuration of the project using a `.env` file (see the `.env.example`) or editing the `src/main/resource/application.conf`. You can run the tests with `sbt test`.
 
 ## Example usage
 
@@ -32,3 +32,5 @@ Open up http://localhost:1337/docs and exercise the API with the given Swagger U
 2. The project is based on my own template project for microservices with ZIO and Scala 3 open sourced at https://github.com/lachezar/zio-scala-3-project . Unfortunately due to the small scope of the assignment, the architecture and all the carefully thought out dependencies can't really shine 🥲
 
 3. I've decided to support arbitrary long opening intervals by splitting intervals longer than 24 hours into subintervals. For example opening at 10 AM on Monday and closing at 5 PM on Tuesday will be represented as two intervals - "Monday 10 AM - 12 AM" and "Tuesday 12 AM - 5 PM". In this way the application supports arbitrary long working schedule. Note that opening and closing within 24 hours would not split the work interval into subintervals (e.g. opening at 10 AM on Monday and closing at 1 AM on Tuesday will still be shown as "Monday 10 AM - 1 AM").
+
+4. Answering "Is the current JSON structure the best way to represent that kind of data" - I'd suggest a format in which the opening hours intervals are represented with a `start` (minutes since Monday 00:00) and `duration` (in minutes) - `[{"start": MinutesSinceStartOfWeek, "duration": Minutes}]`. In this way we can represent any point in time within the week (e.g. Saturday 1 AM is `5 * 24 * 60 + 60` minutes). The downside is that it is not that human readable, so may be a structure as `{"weekDay": [{"start": Minutes, "endExclusive": Minutes}]}` will be easier to reason for other engineers that integrate with the API. The proposed structures must still be validated for overlapping intervals and value ranges.

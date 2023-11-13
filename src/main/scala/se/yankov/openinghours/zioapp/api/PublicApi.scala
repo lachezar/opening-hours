@@ -10,7 +10,6 @@ import domain.workinghours.WorkingHoursDomainError
 import sttp.model.{ Header, MediaType, StatusCode }
 import sttp.tapir.{ endpoint, Codec, Endpoint, PublicEndpoint, Schema }
 import sttp.tapir.CodecFormat.TextPlain
-import sttp.tapir.docs.openapi.OpenAPIDocsInterpreter
 import sttp.tapir.generic.auto.*
 import sttp.tapir.json.zio.jsonBody
 import sttp.tapir.server.ServerEndpoint
@@ -52,6 +51,7 @@ object PublicApi {
   val swaggerEndpoints: List[ZServerEndpoint[Any, Any]] =
     import sttp.apispec.openapi.circe.yaml.*
     import sttp.apispec.openapi.*
+    import sttp.tapir.docs.openapi.OpenAPIDocsInterpreter
     val docs: OpenAPI = OpenAPIDocsInterpreter()
       .toOpenAPI(formatWorkingHoursEndpoint :: Nil, Info("Opening Hours", "1.0"))
       .openapi("3.0.3") // "3.0.3" version explicitly specified
