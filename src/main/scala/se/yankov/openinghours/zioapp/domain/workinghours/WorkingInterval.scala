@@ -19,16 +19,19 @@ final case class WorkingInterval(start: Int, endExclusive: Int):
   def normalize: WorkingInterval =
     copy(start = start % TimeUtils.weekSeconds, endExclusive = endExclusive % TimeUtils.weekSeconds)
 
-  override def toString(): String =
-    s"${TimeUtils.formatDay(start)}: ${TimeUtils.formatTime(start)} - ${TimeUtils.formatTime(endExclusive)}"
+  override def toString(): String = s"${TimeUtils.formatTime(start)} - ${TimeUtils.formatTime(endExclusive)}"
 
 object WorkingInterval:
 
   extension (intervals: List[WorkingInterval])
     def toWorkSchedule: String =
-      val map: Map[DayOfWeek, String] =
-        intervals.map(interval => DayOfWeek.values()(interval.start / TimeUtils.daySeconds) -> interval.toString).toMap
+      val workIntervalsMap: Map[DayOfWeek, List[String]] =
+        intervals
+          .map(interval => DayOfWeek.values()(interval.start / TimeUtils.daySeconds) -> interval.toString)
+          .groupMap((day, _) => day)((_, intervalString) => intervalString)
       DayOfWeek
         .values()
-        .map(day => map.getOrElse(day, s"${day.getDisplayName(TextStyle.FULL, Locale.ENGLISH)}: Closed"))
+        .map(day =>
+          s"${day.getDisplayName(TextStyle.FULL, Locale.ENGLISH)}: ${workIntervalsMap.getOrElse(day, "Closed" :: Nil).mkString(", ")}"
+        )
         .mkString("\n")

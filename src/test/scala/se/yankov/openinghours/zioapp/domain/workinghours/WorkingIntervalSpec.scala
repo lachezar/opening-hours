@@ -40,23 +40,40 @@ object WorkingIntervalSpec extends ZIOSpecDefault:
     test("work schedule") {
       assert(List.empty[WorkingInterval].toWorkSchedule)(
         Assertion.equalTo("""
-        |Monday: Closed
-        |Tuesday: Closed
-        |Wednesday: Closed
-        |Thursday: Closed
-        |Friday: Closed
-        |Saturday: Closed
-        |Sunday: Closed""".stripMargin.trim)
+          |Monday: Closed
+          |Tuesday: Closed
+          |Wednesday: Closed
+          |Thursday: Closed
+          |Friday: Closed
+          |Saturday: Closed
+          |Sunday: Closed""".stripMargin.trim)
       ) &&
       assert((WorkingInterval(start = 9 * 3600, endExclusive = TimeUtils.daySeconds + 2 * 3600) :: Nil).toWorkSchedule)(
         Assertion.equalTo("""
-        |Monday: 9 AM - 2 AM
-        |Tuesday: Closed
-        |Wednesday: Closed
-        |Thursday: Closed
-        |Friday: Closed
-        |Saturday: Closed
-        |Sunday: Closed""".stripMargin.trim)
+          |Monday: 9 AM - 2 AM
+          |Tuesday: Closed
+          |Wednesday: Closed
+          |Thursday: Closed
+          |Friday: Closed
+          |Saturday: Closed
+          |Sunday: Closed""".stripMargin.trim)
+      )
+    },
+    test("work schedule with multiple working intervals per day") {
+      assert(
+        (WorkingInterval(start = 0, endExclusive = 3600) ::
+          WorkingInterval(start = 3 * 3600, endExclusive = 4 * 3600) ::
+          WorkingInterval(start = 14 * 3600, endExclusive = 22 * 3600) ::
+          Nil).toWorkSchedule
+      )(
+        Assertion.equalTo("""
+          |Monday: 12 AM - 1 AM, 3 AM - 4 AM, 2 PM - 10 PM
+          |Tuesday: Closed
+          |Wednesday: Closed
+          |Thursday: Closed
+          |Friday: Closed
+          |Saturday: Closed
+          |Sunday: Closed""".stripMargin.trim)
       )
     },
   )
