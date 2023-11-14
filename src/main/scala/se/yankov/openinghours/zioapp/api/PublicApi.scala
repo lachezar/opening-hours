@@ -55,7 +55,7 @@ object PublicApi {
     val docs: OpenAPI = OpenAPIDocsInterpreter()
       .toOpenAPI(formatWorkingHoursEndpoint :: Nil, Info("Opening Hours", "1.0"))
       .openapi("3.0.3") // "3.0.3" version explicitly specified
-    SwaggerUI(docs.toYaml, SwaggerUIOptions.default)
+    SwaggerUI(docs.toYaml3_0_3, SwaggerUIOptions.default)
 
   val api: HttpApp[PublicApiHandler] =
     Routes(
