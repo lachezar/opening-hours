@@ -48,6 +48,7 @@ object PublicApi {
   val apiEndpointsWithHandlers: List[ZServerEndpoint[PublicApiHandler, Any]] = formatWorkingHoursServerEndpoint :: Nil
 
   // TODO: sealed traits in OpenAPI 3.1.0 are still not shown correct (just "object")
+  // The issue is probably caused by this https://github.com/swagger-api/swagger-ui/issues/9159
   val swaggerEndpoints: List[ZServerEndpoint[Any, Any]] =
     import sttp.apispec.openapi.circe.yaml.*
     import sttp.apispec.openapi.*
